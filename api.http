@@ -1,0 +1,154 @@
+### Elo Vet - Coleção de requisições (HTTP Client)
+
+# Instruções:
+# 1) Use o HTTP Client do IntelliJ (abrir este arquivo e executar blocos) ou execute via curl substituindo as variáveis.
+# 2) Faça o registro/login para obter os tokens JWT e preencha as variáveis `ADMIN_TOKEN` e `USER_TOKEN` abaixo.
+
+@ADMIN_TOKEN =
+@USER_TOKEN =
+
+### Autenticação — Registro e Login
+
+### Registrar Admin (veterinário/proxy)
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "login": "admin1",
+  "password": "adminpass",
+  "role": "ADMIN"
+}
+
+### Login Admin (pegar token em campo token)
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "login": "admin1",
+  "password": "adminpass"
+}
+
+### Registrar Tutor (USER)
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "login": "tutor1",
+  "password": "tutorpass",
+  "role": "USER"
+}
+
+### Login Tutor
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "login": "tutor1",
+  "password": "tutorpass"
+}
+
+### CRUD de Pet
+
+### Listar pets
+GET http://localhost:8080/pet
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Obter pet por id
+GET http://localhost:8080/pet/{{PET_ID}}
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Criar pet (ADMIN)
+POST http://localhost:8080/pet
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "nome": "Rex"
+}
+
+### Atualizar pet (ADMIN)
+PUT http://localhost:8080/pet/{{PET_ID}}
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "nome": "Rex Jr"
+}
+
+### Deletar pet (ADMIN)
+DELETE http://localhost:8080/pet/{{PET_ID}}
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### CRUD de Veterinário
+
+### Listar veterinários
+GET http://localhost:8080/veterinary
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Obter veterinário por id
+GET http://localhost:8080/veterinary/{{VET_ID}}
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Criar veterinário (ADMIN)
+POST http://localhost:8080/veterinary
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "nome": "Dra. Ana Silva",
+  "crmv": 1001
+}
+
+### Atualizar veterinário (ADMIN)
+PUT http://localhost:8080/veterinary/{{VET_ID}}
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "nome": "Dra. Ana S.",
+  "crmv": 1001
+}
+
+### Deletar veterinário (ADMIN)
+DELETE http://localhost:8080/veterinary/{{VET_ID}}
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Fluxo Care (Planos de cuidados)
+
+### Criar care plan (HANDOFF) como ADMIN
+POST http://localhost:8080/api/v1/veterinaries/{{VET_ID}}/care-plans
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+{
+  "petId": {{PET_ID}},
+  "petOwnerId": {{USER_ID}},
+  "notes": "Plano de cuidados simplificado",
+  "items": [
+    { "title": "Dar medicação X", "description": "2x ao dia", "dueDate": "2030-01-01" },
+    { "title": "Retorno em 7 dias", "description": "Avaliação clínica", "dueDate": "2030-01-08" }
+  ]
+}
+
+### Listar care plans para um usuário (tutor)
+GET http://localhost:8080/api/v1/users/{{USER_ID}}/care-plans
+Authorization: Bearer {{USER_TOKEN}}
+
+### Marcar item do care plan (tutor)
+POST http://localhost:8080/api/v1/care-plans/{{CARE_PLAN_ID}}/items/{{ITEM_ID}}/mark
+Content-Type: application/json
+Authorization: Bearer {{USER_TOKEN}}
+
+{
+  "status": "DONE",
+  "note": "Medicação administrada"
+}
+
+### Processar reminders (endpoint administrativo manual)
+POST http://localhost:8080/api/v1/admin/process-reminders
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Observações
+# - Substitua as variáveis {{ADMIN_TOKEN}}, {{USER_TOKEN}}, {{PET_ID}}, {{VET_ID}}, {{USER_ID}}, {{CARE_PLAN_ID}}, {{ITEM_ID}} pelos valores reais retornados pela API.
+# - O `api.http` é um ponto de partida; ajuste datas e IDs conforme necessário.
+
