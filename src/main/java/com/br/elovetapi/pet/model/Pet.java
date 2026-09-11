@@ -31,7 +31,4 @@ public class Pet {
     private Integer idadeAproximada;
 
     private Boolean flagCastrado;
-
-    @Lob
-    private byte[] foto;
 }

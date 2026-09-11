@@ -4,119 +4,76 @@
 # 1) Use o HTTP Client do IntelliJ (abrir este arquivo e executar blocos) ou execute via curl substituindo as variáveis.
 # 2) Faça o registro/login para obter os tokens JWT e preencha as variáveis `ADMIN_TOKEN` e `USER_TOKEN` abaixo.
 
-@ADMIN_TOKEN =
-@USER_TOKEN =
+@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ikd1c3Rhdm8iLCJleHAiOjE3ODkwOTkwNjR9.er7rx52YISBjT664o-Pl4eLY-ksRrTStVzCusKCyOWM
+@USER_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ikd1c3Rhdm8iLCJleHAiOjE3ODkwOTkwNjR9.er7rx52YISBjT664o-Pl4eLY-ksRrTStVzCusKCyOWM
+@USER_ID = 1
+@VET_ID = 1
+@PET_ID = 1
+@CARE_PLAN_ID = 1
+@ITEM_ID = 1
 
-### Autenticação — Registro e Login
+### Sequência correta de execução
+# 1) Registrar um usuário (admin ou tutor)
+# 2) Fazer login para obter o token
+# 3) Criar o veterinário usando o ID do usuário recém-criado
+# 4) Criar o pet
+# 5) Criar o care plan usando o pet e o usuário dono do pet
+#
+# Observação: no projeto atual o cadastro de veterinário exige `idUsuario` preenchido com um usuário existente.
+# Portanto, ajuste `@USER_ID` para o id real retornado no banco/na resposta do cadastro antes de criar o veterinário.
 
-### Registrar Admin (veterinário/proxy)
+### 1) Criar usuário
 POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
-  "login": "admin1",
-  "password": "adminpass",
-  "role": "ADMIN"
+  "nomeUsuario": "admin1",
+  "email": "admin1@elo-vet.com",
+  "senha": "adminpass",
+  "tipoUsuario": "ADMIN"
 }
 
-### Login Admin (pegar token em campo token)
+### 2) Login do usuário
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "login": "admin1",
-  "password": "adminpass"
+  "nomeUsuario": "admin1",
+  "senha": "adminpass"
 }
 
-### Registrar Tutor (USER)
-POST http://localhost:8080/auth/register
-Content-Type: application/json
-
-{
-  "login": "tutor1",
-  "password": "tutorpass",
-  "role": "USER"
-}
-
-### Login Tutor
-POST http://localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "login": "tutor1",
-  "password": "tutorpass"
-}
-
-### CRUD de Pet
-
-### Listar pets
-GET http://localhost:8080/pet
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Obter pet por id
-GET http://localhost:8080/pet/{{PET_ID}}
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Criar pet (ADMIN)
-POST http://localhost:8080/pet
-Content-Type: application/json
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-{
-  "nome": "Rex"
-}
-
-### Atualizar pet (ADMIN)
-PUT http://localhost:8080/pet/{{PET_ID}}
-Content-Type: application/json
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-{
-  "nome": "Rex Jr"
-}
-
-### Deletar pet (ADMIN)
-DELETE http://localhost:8080/pet/{{PET_ID}}
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### CRUD de Veterinário
-
-### Listar veterinários
-GET http://localhost:8080/veterinary
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Obter veterinário por id
-GET http://localhost:8080/veterinary/{{VET_ID}}
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Criar veterinário (ADMIN)
+### 3) Criar veterinário (usar o mesmo id do usuário cadastrado)
 POST http://localhost:8080/veterinary
 Content-Type: application/json
 Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-  "nome": "Dra. Ana Silva",
-  "crmv": 1001
+  "idUsuario": {{USER_ID}},
+  "nomeCompleto": "Dra. Ana Silva",
+  "cpf": "12345678901",
+  "rg": "12345678",
+  "dataNascimento": "1988-02-20",
+  "crmv": "SP12345",
+  "telefone": "11999998888"
 }
 
-### Atualizar veterinário (ADMIN)
-PUT http://localhost:8080/veterinary/{{VET_ID}}
+### 4) Criar pet
+POST http://localhost:8080/pet
 Content-Type: application/json
 Authorization: Bearer {{ADMIN_TOKEN}}
 
 {
-  "nome": "Dra. Ana S.",
-  "crmv": 1001
+  "nome": "Thor",
+  "especie": "CACHORRO",
+  "raca": "SRD",
+  "sexo": "M",
+  "dataNascimento": "2020-03-15",
+  "idadeAproximada": 5,
+  "flagCastrado": true
 }
 
-### Deletar veterinário (ADMIN)
-DELETE http://localhost:8080/veterinary/{{VET_ID}}
-Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Fluxo Care (Planos de cuidados)
-
-### Criar care plan (HANDOFF) como ADMIN
-POST http://localhost:8080/api/v1/veterinaries/{{VET_ID}}/care-plans
+### 5) Criar care plan
+POST http://localhost:8080/veterinaries/{{VET_ID}}/care-plans
 Content-Type: application/json
 Authorization: Bearer {{ADMIN_TOKEN}}
 
@@ -125,17 +82,37 @@ Authorization: Bearer {{ADMIN_TOKEN}}
   "petOwnerId": {{USER_ID}},
   "notes": "Plano de cuidados simplificado",
   "items": [
-    { "title": "Dar medicação X", "description": "2x ao dia", "dueDate": "2030-01-01" },
-    { "title": "Retorno em 7 dias", "description": "Avaliação clínica", "dueDate": "2030-01-08" }
+    {
+      "title": "Dar medicação X",
+      "description": "2x ao dia",
+      "dueDate": "2030-01-01",
+      "status": "PENDING"
+    },
+    {
+      "title": "Retorno em 7 dias",
+      "description": "Avaliação clínica",
+      "dueDate": "2030-01-08",
+      "status": "PENDING"
+    }
   ]
 }
 
-### Listar care plans para um usuário (tutor)
-GET http://localhost:8080/api/v1/users/{{USER_ID}}/care-plans
+### Outros endpoints úteis
+
+### Listar pets
+GET http://localhost:8080/pet
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Listar veterinários
+GET http://localhost:8080/veterinary
+Authorization: Bearer {{ADMIN_TOKEN}}
+
+### Listar care plans para um usuário
+GET http://localhost:8080/users/{{USER_ID}}/care-plans
 Authorization: Bearer {{USER_TOKEN}}
 
-### Marcar item do care plan (tutor)
-POST http://localhost:8080/api/v1/care-plans/{{CARE_PLAN_ID}}/items/{{ITEM_ID}}/mark
+### Marcar item do care plan
+POST http://localhost:8080/care-plans/{{CARE_PLAN_ID}}/items/{{ITEM_ID}}/mark
 Content-Type: application/json
 Authorization: Bearer {{USER_TOKEN}}
 
@@ -144,11 +121,6 @@ Authorization: Bearer {{USER_TOKEN}}
   "note": "Medicação administrada"
 }
 
-### Processar reminders (endpoint administrativo manual)
-POST http://localhost:8080/api/v1/admin/process-reminders
+### Processar reminders
+POST http://localhost:8080/admin/process-reminders
 Authorization: Bearer {{ADMIN_TOKEN}}
-
-### Observações
-# - Substitua as variáveis {{ADMIN_TOKEN}}, {{USER_TOKEN}}, {{PET_ID}}, {{VET_ID}}, {{USER_ID}}, {{CARE_PLAN_ID}}, {{ITEM_ID}} pelos valores reais retornados pela API.
-# - O `api.http` é um ponto de partida; ajuste datas e IDs conforme necessário.
-
