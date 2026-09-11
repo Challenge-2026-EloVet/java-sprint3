@@ -19,12 +19,14 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     private Long idUsuario;
     @Column(name = "nome_usuario")
     private String login;
     private String email;
     @Column(name = "senha_hash")
     private String password;
+    @Enumerated(EnumType.ORDINAL)
     private UserRole tipoUsuario;
 
     @Override

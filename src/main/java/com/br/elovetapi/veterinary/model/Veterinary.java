@@ -24,7 +24,8 @@ public class Veterinary {
     private LocalDate dataNascimento;
     private String crmv;
     private String telefone;
-    @OneToOne
-    @JoinColumn(name = "id_usuario")
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", unique = true)
     private User usuario;
 }

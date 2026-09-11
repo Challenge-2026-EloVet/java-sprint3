@@ -5,9 +5,6 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public record VeterinaryRequestDTO(
-        @NotNull(message = "O ID do usuário não pode ser nulo")
-        Long idUsuario,
-
         @NotBlank(message = "O nome completo não pode ser nulo ou vazio")
         @Size(max = 150, message = "O nome completo deve ter no máximo 150 caracteres")
         String nomeCompleto,
@@ -27,6 +24,9 @@ public record VeterinaryRequestDTO(
         String crmv,
 
         @Size(max = 20, message = "O telefone deve ter no máximo 20 caracteres")
-        String telefone
+        String telefone,
+
+        @NotNull(message = "O id do usuário não pode ser nulo")
+        Long idUsuario
 ) {
 }
