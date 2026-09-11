@@ -63,8 +63,10 @@ public class CarePlanService {
         petRepository.findById(dto.petId())
                 .orElseThrow(() -> new PetNotFoundException("Pet not found with id: " + dto.petId()));
 
-        userRepository.findById(dto.petOwnerId())
-                .orElseThrow(() -> new CarePlanValidationException("User not found with id: " + dto.petOwnerId()));
+        boolean userExists = userRepository.existsById(dto.petOwnerId());
+        if (!userExists) {
+            throw new CarePlanValidationException("User not found with id: " + dto.petOwnerId());
+        }
 
         User creator = authenticatedUserProvider.getCurrentUser();
         CarePlan saved = carePlanRepository.save(CarePlanMapper.toEntity(veterinaryId, dto, creator.getIdUsuario()));
