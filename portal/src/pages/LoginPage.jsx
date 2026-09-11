@@ -65,7 +65,9 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <div className="brand-icon large">🐶</div>
+          <div className="brand-icon large">
+            <img src="/favicon.svg" alt="Elo Vet" />
+          </div>
           <h1>Elo Vet</h1>
           <p>💚 Portal clínico e de acompanhamento do pet</p>
         </div>

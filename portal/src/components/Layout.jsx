@@ -16,7 +16,9 @@ export default function Layout() {
     <div className="layout-shell">
       <aside className="sidebar">
         <div className="brand-box">
-          <div className="brand-icon">🐶</div>
+          <div className="brand-icon">
+            <img src="/favicon.svg" alt="Elo Vet" />
+          </div>
           <div>
             <h3>Elo Vet</h3>
             <small>Portal</small>
