@@ -28,5 +28,5 @@ CREATE TABLE IF NOT EXISTS elo_veterinario (
     telefone VARCHAR(255),
     id_usuario BIGINT UNIQUE,
     CONSTRAINT fk_elo_veterinario_usuario
-        FOREIGN KEY (id_usuario) REFERENCES users(id_usuario)
+        FOREIGN KEY (id_usuario) REFERENCES elo_login(id_usuario)
 );

@@ -26,8 +26,6 @@ public record PetRequestDTO(
         @Max(value = 999, message = "A idade aproximada deve ter no máximo 3 dígitos")
         Integer idadeAproximada,
 
-        Boolean flagCastrado,
-
-        byte[] foto
+        Boolean flagCastrado
 ) {
 }
