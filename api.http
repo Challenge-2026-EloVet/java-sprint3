@@ -4,8 +4,8 @@
 # 1) Use o HTTP Client do IntelliJ (abrir este arquivo e executar blocos) ou execute via curl substituindo as variáveis.
 # 2) Faça o registro/login para obter os tokens JWT e preencha as variáveis `ADMIN_TOKEN` e `USER_TOKEN` abaixo.
 
-@ADMIN_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ikd1c3Rhdm8iLCJleHAiOjE3ODkwOTkwNjR9.er7rx52YISBjT664o-Pl4eLY-ksRrTStVzCusKCyOWM
-@USER_TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdXRoLWFwaSIsInN1YiI6Ikd1c3Rhdm8iLCJleHAiOjE3ODkwOTkwNjR9.er7rx52YISBjT664o-Pl4eLY-ksRrTStVzCusKCyOWM
+@ADMIN_TOKEN =
+@USER_TOKEN =
 @USER_ID = 1
 @VET_ID = 1
 @PET_ID = 1
